@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpendWise AI — Smart Student Expense Tracker</title>
+  <meta name="description" content="AI-powered expense analytics, natural language expense parser, budget forecasting, and coaching built for students." />
+  <link rel="stylesheet" href="./src/style.css" />
+  <!-- Remixicon for sleek vector icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- App Header -->
+    <header class="app-header">
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <i class="ri-wallet-3-line"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">SpendWise AI</h1>
+          <p class="brand-subtitle">Smart Student Expense Intelligence</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-edit-budget" class="btn btn-secondary">
+          <i class="ri-edit-line"></i> Budget: <span id="header-budget-val">₹5,000</span>
+        </button>
+        <button id="btn-open-coach" class="btn btn-coach">
+          <i class="ri-robot-line"></i> AI Coach
+        </button>
+        <button id="btn-reset-demo" class="btn btn-secondary" title="Reset Demo Data">
+          <i class="ri-refresh-line"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Natural Language Quick Parser Input -->
+    <section class="parser-card">
+      <div class="parser-title-row">
+        <h2 class="parser-title">
+          <i class="ri-magic-line" style="color: var(--primary);"></i> AI Smart Parser
+        </h2>
+        <span style="font-size: 12px; color: var(--text-dim);">Try: "paid 1200 for Amazon shoes" or "₹250 Uber ride"</span>
+      </div>
+      <form id="nl-form" class="nl-input-group">
+        <input 
+          type="text" 
+          id="nl-input" 
+          class="nl-input" 
+          placeholder="Type expense in plain English (e.g., spent 180 on canteen lunch yesterday)..." 
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary">
+          <i class="ri-add-line"></i> Add Expense
+        </button>
+      </form>
+      <div id="parse-preview" class="parse-preview" style="display: none;">
+        <span class="preview-badge">Live AI Parse</span>
+        <span id="preview-text">Amount: ₹0 | Category: Other</span>
+      </div>
+    </section>
+
+    <!-- Metrics Grid -->
+    <section class="metrics-grid">
+      <!-- Total Spent Card -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Spent This Month</span>
+          <div class="metric-icon spent"><i class="ri-money-rupee-circle-line"></i></div>
+        </div>
+        <div class="metric-value" id="val-spent">₹0</div>
+        <div class="progress-bar-bg">
+          <div id="spent-progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="metric-subtext" id="val-pct-used">0% of budget used</div>
+      </div>
+
+      <!-- Safe-to-Spend Daily Card -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Safe To Spend Today</span>
+          <div class="metric-icon safe"><i class="ri-shield-check-line"></i></div>
+        </div>
+        <div class="metric-value" id="val-safe">₹0 / day</div>
+        <div class="metric-subtext" id="val-days-left">31 days remaining</div>
+      </div>
+
+      <!-- Forecast Projection Card -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">End of Month Forecast</span>
+          <div class="metric-icon forecast"><i class="ri-line-chart-line"></i></div>
+        </div>
+        <div class="metric-value" id="val-forecast">₹0</div>
+        <div class="metric-subtext" id="val-forecast-status">Paced to stay under budget</div>
+      </div>
+
+      <!-- Remaining Budget Card -->
+      <div class="metric-card">
+        <div class="metric-header">
+          <span class="metric-label">Remaining Budget</span>
+          <div class="metric-icon budget"><i class="ri-bank-card-line"></i></div>
+        </div>
+        <div class="metric-value" id="val-remaining">₹5,000</div>
+        <div class="metric-subtext">Total Budget: <span id="sub-budget-val">₹5,000</span></div>
+      </div>
+    </section>
+
+    <!-- Main Content Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Left Column: Transactions & Categories -->
+      <div>
+        <!-- Transactions List Panel -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i class="ri-list-check-3" style="color: var(--accent-cyan);"></i> Transactions</h2>
+            <span style="font-size: 13px; color: var(--text-dim);" id="tx-count">0 items</span>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="tx-filter-bar" id="category-filter-chips">
+            <button class="filter-chip active" data-category="All">All</button>
+            <button class="filter-chip" data-category="Food">Food</button>
+            <button class="filter-chip" data-category="Transportation">Transportation</button>
+            <button class="filter-chip" data-category="Shopping">Shopping</button>
+            <button class="filter-chip" data-category="Subscriptions">Subscriptions</button>
+            <button class="filter-chip" data-category="Entertainment">Entertainment</button>
+            <button class="filter-chip" data-category="Education">Education</button>
+            <button class="filter-chip" data-category="Other">Other</button>
+          </div>
+
+          <!-- List container -->
+          <div class="tx-list" id="tx-list">
+            <!-- Dynamic rows inserted via JS -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Category Breakdown, Insights & What-If -->
+      <div>
+        <!-- Category Breakdown Panel -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i class="ri-pie-chart-2-line" style="color: var(--primary);"></i> Category Breakdown</h2>
+          </div>
+          <div id="category-breakdown-list">
+            <!-- Category progress items rendered via JS -->
+          </div>
+        </section>
+
+        <!-- Smart AI Insights Panel -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i class="ri-lightbulb-line" style="color: var(--accent-amber);"></i> AI Smart Insights</h2>
+          </div>
+          <div class="insights-list" id="insights-list">
+            <!-- Insight items rendered via JS -->
+          </div>
+        </section>
+
+        <!-- What-If Savings Simulator Panel -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i class="ri-sliders-line" style="color: var(--accent-emerald);"></i> What-If Savings Simulator</h2>
+          </div>
+          <div class="whatif-controls">
+            <div class="control-group">
+              <label class="control-label" for="whatif-category">Reduce Category Spending</label>
+              <select id="whatif-category" class="select-input">
+                <option value="Food">Food</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Subscriptions">Subscriptions</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Education">Education</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <div style="display: flex; justify-content: space-between;">
+                <label class="control-label" for="whatif-pct">Cut By</label>
+                <span id="whatif-pct-label" style="font-size: 12px; color: var(--accent-emerald); font-weight: 600;">15%</span>
+              </div>
+              <input type="range" id="whatif-pct" class="range-input" min="5" max="50" step="5" value="15" />
+            </div>
+          </div>
+          <div class="whatif-result-card">
+            <div style="font-size: 12px; color: var(--text-muted);">Estimated Monthly Savings</div>
+            <div class="whatif-savings" id="whatif-savings-val">₹0</div>
+            <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="whatif-subtext">New Projected Diff: ₹0</div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Coach Chat Modal Drawer -->
+  <div class="modal-overlay" id="coach-modal">
+    <div class="coach-drawer">
+      <div class="drawer-header">
+        <h3 class="drawer-title">
+          <i class="ri-robot-line" style="color: var(--accent-purple);"></i> SpendWise AI Coach
+        </h3>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary" id="btn-reset-chat" title="Clear chat session" style="padding: 6px 10px; font-size: 12px;">
+            <i class="ri-refresh-line"></i> New Chat
+          </button>
+          <button class="close-btn" id="btn-close-coach"><i class="ri-close-line"></i></button>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-bubble bot">
+          👋 Hi! I'm your SpendWise AI Financial Coach. Ask me any question about your budget, spending habits, or affordability!
+        </div>
+      </div>
+
+      <div class="quick-prompts">
+        <button class="prompt-chip" data-prompt="Analyze my spending this month">Analyze my spending</button>
+        <button class="prompt-chip" data-prompt="Where am I overspending?">Where am I overspending?</button>
+        <button class="prompt-chip" data-prompt="Can I afford ₹800 this week?">Can I afford ₹800 this week?</button>
+        <button class="prompt-chip" data-prompt="How much can I safely spend today?">Safely spend today?</button>
+        <button class="prompt-chip" data-prompt="How can I save ₹2000 this month?">How to save ₹2,000?</button>
+        <button class="prompt-chip" data-prompt="What's my biggest expense category?">Biggest category?</button>
+      </div>
+
+      <form id="chat-form" class="chat-input-row">
+        <textarea 
+          id="chat-input" 
+          class="chat-input" 
+          placeholder="Ask coach a question... (Enter to send, Shift+Enter for newline)" 
+          rows="1"
+          style="resize: none; font-family: var(--font-body);"
+        ></textarea>
+        <button type="submit" class="btn btn-primary" style="padding: 10px 14px; align-self: flex-end;">
+          <i class="ri-send-plane-fill"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

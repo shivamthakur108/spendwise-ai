@@ -1,0 +1,21 @@
+{
+  "name": "spendwise-ai-engine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "server": "node backend/server.js",
+    "start": "vite",
+    "test": "node src/engine/test.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "vite": "^8.3.1"
+  }
+}
