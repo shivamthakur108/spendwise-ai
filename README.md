@@ -12,29 +12,37 @@ SpendWise AI fixes this by giving students a real-time financial command center:
 
 🎯 Problem & Solution
 The Problem
+
 Unpredictable Micro-Spending: Small daily purchases (chai, snacks, food delivery) compound silently into month-end budget deficits.
 Friction in Logging: Manual forms with dropdowns and category selectors discourage consistent expense tracking.
 Static / Generic Advice: Generic financial apps tell users to "spend less" without understanding their actual active budget, daily targets, or category breakdowns.
+
 The Solution
 Natural Language Expense Entry: Simply type "paid 120 for chai and samosa" or "spent 1.2k on books", and the AI engine parses amount, category, description, and date instantly.
 Daily Safe-To-Spend Target: Dynamically adjusts daily spending allowances based on remaining budget and days left in the month.
 Month-End Spending Forecast: Run-rate projections alert students early if their current spending pace will lead to an overrun.
 Contextual AI Financial Coach: A privacy-conscious assistant that receives the student's live financial data and answers natural questions like "Can I afford ₹800 this week?" or "Where am I overspending?".
+
 ✨ Key Features
 🤖 AI Financial Coach
 Natural Language Q&A: Ask any budgeting question in plain English.
 Context-Grounded Reasoning: Receives current budget, total spent, safe-to-spend target, category breakdown, recent transactions, and multi-turn chat history.
 Structured Responses: Concise direct answer followed by key observations, calculations, and recommendations.
 Offline Fallback: Seamless fallback to deterministic analytics when offline or if API keys are absent.
+
 📊 Smart Spending Analysis
 Automated Insights: Identifies 7-day food spending trends, food delivery app patterns (Swiggy, Zomato, Blinkit), and micro-purchases under ₹300.
 Category Breakdown: Visual progress bars and percentage distribution for Food, Transportation, Shopping, Subscriptions, Entertainment, Education, and Other.
+
 🛡️ Safe-to-Spend
 Daily Target Calculation: Evaluates Math.max(0, remainingBudget) / daysLeftInMonth in real time.
 Dynamic Adjustments: Instantly updates as transactions are added, edited, or deleted.
+
 📈 Month-End Forecast
 Run-Rate Projection: Calculates (currentSpend / elapsedDays) * totalDaysInMonth.
 Early Overrun Alerts: Highlights projected savings or budget deficits before the month ends.
+
+
 🎛️ What-If Simulator
 Interactive Scenario Planning: Adjust category cut percentages (5% to 50%) using an interactive slider.
 Instant Calculation: Computes exact monthly savings and updated forecast metrics.
@@ -43,14 +51,17 @@ Regex & Keyword Parsing: Automatically maps amounts (1.2k
 →
  1200), categories (uber, zomato, netflix, amazon, printout), and descriptions.
 Live AI Parse Preview: Displays parsed values in real time as the user types.
+
 📅 Multi-Month Expense Architecture
 Historical Persistence: Transactions naturally persist across calendar months without losing previous spending history.
 Defensive Storage Engine: Schema versioning, input sanitization, safe migrations, and graceful error recovery.
+
 🛠️ Tech Stack
 Frontend: HTML5, Vanilla JavaScript (ES Modules), CSS3 (Custom Glassmorphic Dark Theme), Vite.
 Backend: Node.js, Express.js, CORS, Dotenv.
 AI Engine: Google Gemini API (@google/generative-ai SDK, gemini-1.5-flash model).
 Styling & Typography: Google Fonts (Outfit, Plus Jakarta Sans), Remix Icons.
+
 🏗️ Architecture
 User Browser (Vite / HTML5)
    │
@@ -67,6 +78,7 @@ User Browser (Vite / HTML5)
                                          │
                                          ▼
                                 Structured AI Response
+
 📁 Project Structure
 smart expense tracker/
 ├── index.html               # Main Web Dashboard UI & AI Coach Drawer Modal
@@ -90,6 +102,8 @@ smart expense tracker/
         ├── parse.js         # Natural language regex/keyword expense parser
         ├── storage.js       # Versioned state loader, sanitizer & migration module
         └── test.js          # CLI engine verification test runner
+
+
 🚀 Local Setup
 1. Prerequisites
 Node.js (v18.x or higher)
@@ -110,6 +124,7 @@ Run Backend & Frontend (Recommended): Terminal 1 (Backend): npm run server Termi
 
 Run Frontend Only (Offline Mode): npm run dev (Uses offline deterministic analytics & fallback coach).
 
+
 🔑 Environment Variables
 Variable	Scope	Description
 GEMINI_API_KEY	Server-Side ONLY	Secret Google Gemini API Key
@@ -118,8 +133,9 @@ FRONTEND_URL	Server-Side	Allowed CORS origin for production frontend
 VITE_API_BASE_URL	Build-Time Optional	Deployed backend API base URL (e.g. https://spendwise-backend.onrender.com)
 🧪 Testing
 Run CLI analytics engine verification suite:
-
 npm test
+
+
 ☁️ Production Deployment
 Recommended Cloud Hosting
 Frontend: Static host like Vercel or Netlify (npm run build).
@@ -133,9 +149,13 @@ Config: Set GEMINI_API_KEY, PORT, FRONTEND_URL.
 Frontend Deployment:
 Host: Vercel / Netlify
 Build Command: npm run build
+
+
 Output Folder: dist
 Config: Set VITE_API_BASE_URL to deployed backend URL.
+
 🔒 Security Notes
+
 Server-Side API Keys: GEMINI_API_KEY is maintained exclusively on the Express backend server and is never bundled or exposed to frontend code.
 Client-Side Privacy: Financial data is stored in the user's browser localStorage.
 Non-Leaking Error Middleware: Production API error responses do not leak stack traces or file paths.
